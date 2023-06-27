@@ -11,7 +11,9 @@ import {
 import {
   Alert,
   Button,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -29,6 +31,10 @@ import { getReadableValidationErrorMessage } from './utils';
 export const SignupForm: React.FC = () => {
   const [shouldValidateWithZod, setShouldValidateWithZod] =
     React.useState<boolean>(false);
+
+  const [isCalendarOpenForAndroid, setIsCalendarOpenForAndroid] =
+    React.useState<boolean>(false);
+
   const methods = useForm<SignUpFormSchema>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
@@ -51,219 +57,241 @@ export const SignupForm: React.FC = () => {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
-      <Text style={styles.title}>Sign Up Form</Text>
-      <View style={styles.root}>
-        <FormProvider {...methods}>
-          <Controller
-            control={methods.control}
-            name="name"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => {
-              return (
-                <TextInput
-                  label="Name"
-                  onBlur={onBlur}
-                  value={value}
-                  onChangeText={onChange}
-                  errorMessage={error?.message}
-                />
-              );
-            }}
-          />
-          <View style={styles.spacing} />
-          <Controller
-            control={methods.control}
-            name="surname"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => {
-              return (
-                <TextInput
-                  label="Surname"
-                  onBlur={onBlur}
-                  value={value}
-                  onChangeText={onChange}
-                  errorMessage={error?.message}
-                />
-              );
-            }}
-          />
-          <View style={styles.spacing} />
-
-          <Controller
-            control={methods.control}
-            name="email"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => {
-              return (
-                <TextInput
-                  label="Email"
-                  onBlur={onBlur}
-                  value={value}
-                  onChangeText={onChange}
-                  errorMessage={error?.message}
-                />
-              );
-            }}
-          />
-
-          <View style={styles.spacing} />
-
-          <Controller
-            control={methods.control}
-            name="phoneNumber"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => {
-              return (
-                <TextInput
-                  label="Phone number"
-                  onBlur={onBlur}
-                  keyboardType="decimal-pad"
-                  value={value}
-                  onChangeText={(val) => onChange(val.toString())}
-                  errorMessage={error?.message}
-                />
-              );
-            }}
-          />
-
-          <View style={styles.spacing} />
-
-          <Controller
-            control={methods.control}
-            name="birthDate"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => {
-              return (
-                <View style={styles.dateWrapper}>
-                  <Text style={styles.label}>Birth date</Text>
-                  <RNDateTimePicker
+      <ScrollView>
+        <Text style={styles.title}>Sign Up Form</Text>
+        <View style={styles.root}>
+          <FormProvider {...methods}>
+            <Controller
+              control={methods.control}
+              name="name"
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => {
+                return (
+                  <TextInput
+                    label="Name"
+                    onBlur={onBlur}
                     value={value}
-                    style={styles.dateTimePicker}
-                    mode="date"
-                    onChange={(e) => {
-                      if (
-                        e.type === 'set' &&
-                        e.nativeEvent.timestamp
-                      ) {
-                        onChange(new Date(e.nativeEvent.timestamp));
-                        methods.trigger('birthDate');
-                      }
-                    }}
+                    onChangeText={onChange}
+                    errorMessage={error?.message}
                   />
-                  {!!error?.message && (
-                    <Text style={styles.errorMessageText}>
-                      {error.message}
-                    </Text>
-                  )}
-                </View>
-              );
-            }}
-          />
+                );
+              }}
+            />
+            <View style={styles.spacing} />
+            <Controller
+              control={methods.control}
+              name="surname"
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => {
+                return (
+                  <TextInput
+                    label="Surname"
+                    onBlur={onBlur}
+                    value={value}
+                    onChangeText={onChange}
+                    errorMessage={error?.message}
+                  />
+                );
+              }}
+            />
+            <View style={styles.spacing} />
 
-          <View style={styles.spacing} />
+            <Controller
+              control={methods.control}
+              name="email"
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => {
+                return (
+                  <TextInput
+                    label="Email"
+                    onBlur={onBlur}
+                    value={value}
+                    onChangeText={onChange}
+                    errorMessage={error?.message}
+                  />
+                );
+              }}
+            />
 
-          <Controller
-            control={methods.control}
-            name="gender"
-            render={({
-              field: { onChange, onBlur, value, ref },
-              fieldState: { error },
-            }) => {
-              return (
-                <View style={styles.genderWrapper}>
-                  <Text style={styles.label}>Gender</Text>
-                  <View style={styles.genderOptionsWrapper}>
-                    {GENDER_OPTIONS.map((genderOption) => (
-                      <Pressable
-                        key={genderOption}
-                        style={[
-                          styles.genderOptionPressable,
-                          {
-                            backgroundColor:
-                              value === genderOption
-                                ? '#007BFF'
-                                : '#F2F2F2',
-                          },
-                        ]}
-                        onPress={() => onChange(genderOption)}
-                      >
-                        <Text
+            <View style={styles.spacing} />
+
+            <Controller
+              control={methods.control}
+              name="phoneNumber"
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => {
+                return (
+                  <TextInput
+                    label="Phone number"
+                    onBlur={onBlur}
+                    keyboardType="decimal-pad"
+                    value={value}
+                    onChangeText={(val) => onChange(val.toString())}
+                    errorMessage={error?.message}
+                  />
+                );
+              }}
+            />
+
+            <View style={styles.spacing} />
+
+            <Controller
+              control={methods.control}
+              name="birthDate"
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => {
+                return (
+                  <View style={styles.dateWrapper}>
+                    <Text style={styles.label}>Birth date</Text>
+
+                    {Platform.OS === 'android' && (
+                      <Button
+                        onPress={() => {
+                          setIsCalendarOpenForAndroid(true);
+                        }}
+                        title={value.toString()}
+                      />
+                    )}
+
+                    {(isCalendarOpenForAndroid ||
+                      Platform.OS !== 'android') && (
+                      <RNDateTimePicker
+                        value={value}
+                        style={styles.dateTimePicker}
+                        mode={'date'}
+                        onChange={(e) => {
+                          if (Platform.OS === 'android') {
+                            setIsCalendarOpenForAndroid(false);
+                          }
+
+                          if (
+                            e.type === 'set' &&
+                            e.nativeEvent.timestamp
+                          ) {
+                            onChange(
+                              new Date(e.nativeEvent.timestamp)
+                            );
+                            methods.trigger('birthDate');
+                          }
+                        }}
+                      />
+                    )}
+
+                    {!!error?.message && (
+                      <Text style={styles.errorMessageText}>
+                        {error.message}
+                      </Text>
+                    )}
+                  </View>
+                );
+              }}
+            />
+
+            <View style={styles.spacing} />
+
+            <Controller
+              control={methods.control}
+              name="gender"
+              render={({
+                field: { onChange, onBlur, value, ref },
+                fieldState: { error },
+              }) => {
+                return (
+                  <View style={styles.genderWrapper}>
+                    <Text style={styles.label}>Gender</Text>
+                    <View style={styles.genderOptionsWrapper}>
+                      {GENDER_OPTIONS.map((genderOption) => (
+                        <Pressable
+                          key={genderOption}
                           style={[
-                            styles.genderOptionText,
+                            styles.genderOptionPressable,
                             {
-                              color:
+                              backgroundColor:
                                 value === genderOption
-                                  ? '#fff'
-                                  : '#000',
+                                  ? '#007BFF'
+                                  : '#F2F2F2',
                             },
                           ]}
+                          onPress={() => onChange(genderOption)}
                         >
-                          {genderOption}
-                        </Text>
-                      </Pressable>
-                    ))}
+                          <Text
+                            style={[
+                              styles.genderOptionText,
+                              {
+                                color:
+                                  value === genderOption
+                                    ? '#fff'
+                                    : '#000',
+                              },
+                            ]}
+                          >
+                            {genderOption}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                    {!!error?.message && (
+                      <Text style={styles.errorMessageText}>
+                        {error.message}
+                      </Text>
+                    )}
                   </View>
-                  {!!error?.message && (
-                    <Text style={styles.errorMessageText}>
-                      {error.message}
-                    </Text>
-                  )}
-                </View>
-              );
-            }}
-          />
+                );
+              }}
+            />
 
-          <View style={styles.spacing} />
+            <View style={styles.spacing} />
 
-          <Text style={styles.label}>Should validate with zod</Text>
+            <Text style={styles.label}>Should validate with zod</Text>
 
-          <Switch
-            value={shouldValidateWithZod}
-            onChange={(e) =>
-              setShouldValidateWithZod(e.nativeEvent.value)
-            }
-          />
-          <View style={styles.spacing} />
+            <Switch
+              value={shouldValidateWithZod}
+              onChange={(e) =>
+                setShouldValidateWithZod(e.nativeEvent.value)
+              }
+            />
+            <View style={styles.spacing} />
 
-          <Button
-            onPress={
-              shouldValidateWithZod
-                ? () => {
-                    /** we could also prevalidate using zod like below */
+            <Button
+              onPress={
+                shouldValidateWithZod
+                  ? () => {
+                      /** we could also prevalidate using zod like below */
 
-                    // get current form values
-                    const currFormValues = methods.getValues();
-                    // https://zod.dev/?id=safeparse
-                    const result =
-                      signUpFormSchema.safeParse(currFormValues);
+                      // get current form values
+                      const currFormValues = methods.getValues();
+                      // https://zod.dev/?id=safeparse
+                      const result =
+                        signUpFormSchema.safeParse(currFormValues);
 
-                    if (!result.success) {
-                      const formattedError = result.error.format();
-                      console.log(JSON.stringify(formattedError));
-                      Alert.alert(JSON.stringify(formattedError));
-                    } else {
-                      Alert.alert(
-                        'Validation is successful with zod'
-                      );
+                      if (!result.success) {
+                        const formattedError = result.error.format();
+                        console.log(JSON.stringify(formattedError));
+                        Alert.alert(JSON.stringify(formattedError));
+                      } else {
+                        Alert.alert(
+                          'Validation is successful with zod'
+                        );
+                      }
                     }
-                  }
-                : methods.handleSubmit(onSubmit, onError)
-            }
-            title="Submit Form"
-            color={'#007BFF'}
-          />
-        </FormProvider>
-      </View>
+                  : methods.handleSubmit(onSubmit, onError)
+              }
+              title="Submit Form"
+              color={'#007BFF'}
+            />
+          </FormProvider>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
